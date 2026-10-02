@@ -6,7 +6,7 @@ The idea is to provide a centralized workspace where users can manage projects, 
 
 ### 🎯 Problem
 
-Teams often rely on multiple disconnected tools for content creation, project management, collaboration, and document organization. This creates unnecessary complexity, duplicated work, and poor visibility into project progress.
+Editor Teams often rely on multiple disconnected tools for content creation, project management, collaboration, and document organization. This creates unnecessary complexity, duplicated work, and poor visibility into project progress.
 
 ### 💡 Solution
 
