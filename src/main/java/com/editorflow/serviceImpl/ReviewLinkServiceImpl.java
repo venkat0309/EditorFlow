@@ -42,6 +42,11 @@ public class ReviewLinkServiceImpl implements ReviewLinkService {
 
     @Override
     public ReviewLink getReviewLinkByToken(String token) {
+        return getReviewLinkByToken(token, null);
+    }
+
+    @Override
+    public ReviewLink getReviewLinkByToken(String token, String passcode) {
         ReviewLink reviewLink = reviewLinkRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid or expired review link token"));
 
@@ -51,6 +56,11 @@ public class ReviewLinkServiceImpl implements ReviewLinkService {
 
         if (reviewLink.getExpiresAt() != null && reviewLink.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("This review link has expired");
+        }
+
+        if (reviewLink.getPasscode() != null && !reviewLink.getPasscode().isBlank()
+                && !reviewLink.getPasscode().equals(passcode)) {
+            throw new RuntimeException("Invalid review link passcode");
         }
 
         reviewLink.setAccessCount(reviewLink.getAccessCount() + 1);

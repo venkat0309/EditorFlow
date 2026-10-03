@@ -20,6 +20,10 @@ public interface ProjectService {
 
     ProjectResponse updateProject(Long id, UpdateProjectRequest request);
 
+    ProjectResponse assignEditor(Long projectId, Long editorId);
+
+    List<ProjectResponse> getProjectsAssignedTo(Long editorId);
+
     void deleteProject(Long id);
 
     Page<ProjectResponse> getAllProjects(Pageable pageable);

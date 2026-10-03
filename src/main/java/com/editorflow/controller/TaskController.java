@@ -1,12 +1,13 @@
 package com.editorflow.controller;
 
-import com.editorflow.entity.Task;
+import com.editorflow.dto.request.TaskRequest;
+import com.editorflow.dto.response.TaskResponse;
 import com.editorflow.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/projects/{projectId}/tasks")
@@ -20,20 +21,26 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> addTask(
+    public ResponseEntity<TaskResponse> addTask(
             @PathVariable Long projectId,
-            @RequestBody Map<String, String> payload) {
-        String title = payload.get("title");
-        return ResponseEntity.ok(taskService.addTask(projectId, title));
+            @Valid @RequestBody TaskRequest request) {
+        return ResponseEntity.ok(taskService.addTask(projectId, request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getProjectTasks(@PathVariable Long projectId) {
+    public ResponseEntity<List<TaskResponse>> getProjectTasks(@PathVariable Long projectId) {
         return ResponseEntity.ok(taskService.getProjectTasks(projectId));
     }
 
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> updateTask(
+            @PathVariable Long taskId,
+            @Valid @RequestBody TaskRequest request) {
+        return ResponseEntity.ok(taskService.updateTask(taskId, request));
+    }
+
     @PutMapping("/{taskId}/toggle")
-    public ResponseEntity<Task> toggleTaskCompleted(@PathVariable Long taskId) {
+    public ResponseEntity<TaskResponse> toggleTaskCompleted(@PathVariable Long taskId) {
         return ResponseEntity.ok(taskService.toggleTaskCompleted(taskId));
     }
 

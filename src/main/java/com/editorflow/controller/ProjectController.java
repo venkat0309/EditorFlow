@@ -21,7 +21,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import com.editorflow.security.CustomUserDetails;
 
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -36,6 +39,7 @@ public class ProjectController {
         }
 
         @PostMapping
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ApiResponse<ProjectResponse>> createProject(
                         @Valid @RequestBody CreateProjectRequest request) {
 
@@ -79,6 +83,7 @@ public class ProjectController {
         // }
 
         @GetMapping
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ApiResponse<Page<ProjectResponse>>> getAllProjects(
                         @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -92,7 +97,22 @@ public class ProjectController {
                 return ResponseEntity.ok(response);
         }
 
+        @GetMapping("/assigned-to-me")
+        public ResponseEntity<ApiResponse<List<ProjectResponse>>> getAssignedProjects(Authentication authentication) {
+
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                List<ProjectResponse> projects = projectService.getProjectsAssignedTo(userDetails.getId());
+
+                ApiResponse<List<ProjectResponse>> response = new ApiResponse<>(
+                                true,
+                                "Assigned projects retrieved successfully",
+                                projects);
+
+                return ResponseEntity.ok(response);
+        }
+
         @PutMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ApiResponse<ProjectResponse>> updateProject(@PathVariable Long id,
                         @Valid @RequestBody UpdateProjectRequest request) {
 
@@ -101,6 +121,22 @@ public class ProjectController {
                 ApiResponse<ProjectResponse> apiResponse = new ApiResponse<>(
                                 true,
                                 "Project Updated successfully",
+                                response);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        @PutMapping("/{id}/assign-editor/{editorId}")
+        @PreAuthorize("hasRole('ADMIN')")
+        public ResponseEntity<ApiResponse<ProjectResponse>> assignEditor(
+                        @PathVariable Long id,
+                        @PathVariable Long editorId) {
+
+                ProjectResponse response = projectService.assignEditor(id, editorId);
+
+                ApiResponse<ProjectResponse> apiResponse = new ApiResponse<>(
+                                true,
+                                "Editor assigned successfully",
                                 response);
 
                 return ResponseEntity.ok(apiResponse);

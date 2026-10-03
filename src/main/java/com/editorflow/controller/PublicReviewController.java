@@ -33,9 +33,10 @@ public class PublicReviewController {
 
     @GetMapping("/{token}")
     public ResponseEntity<Map<String, Object>> getReviewData(
-            @PathVariable String token) {
+            @PathVariable String token,
+            @RequestParam(required = false) String passcode) {
 
-        ReviewLink link = reviewLinkService.getReviewLinkByToken(token);
+        ReviewLink link = reviewLinkService.getReviewLinkByToken(token, passcode);
 
         Project project = link.getProject();
 
@@ -65,6 +66,8 @@ public class PublicReviewController {
         projectData.put("title", project.getTitle());
         projectData.put("description", project.getDescription());
         projectData.put("clientName", project.getClientName());
+        projectData.put("clientEmail", project.getClientEmail());
+        projectData.put("dueDate", project.getDueDate());
         projectData.put("status", project.getStatus());
 
         response.put("project", projectData);
@@ -82,7 +85,11 @@ public class PublicReviewController {
             @PathVariable String token,
             @RequestBody Map<String, Object> payload) {
 
-        ReviewLink link = reviewLinkService.getReviewLinkByToken(token);
+        String passcode = payload.get("passcode") != null
+                ? payload.get("passcode").toString()
+                : null;
+
+        ReviewLink link = reviewLinkService.getReviewLinkByToken(token, passcode);
 
         Long versionId = payload.get("versionId") != null
                 ? Long.valueOf(payload.get("versionId").toString())
@@ -130,7 +137,7 @@ public class PublicReviewController {
             @PathVariable String token,
             @RequestBody Map<String, String> payload) {
 
-        ReviewLink link = reviewLinkService.getReviewLinkByToken(token);
+        ReviewLink link = reviewLinkService.getReviewLinkByToken(token, payload.get("passcode"));
 
         String versionIdStr = payload.get("versionId");
 
