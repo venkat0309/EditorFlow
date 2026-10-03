@@ -3,10 +3,14 @@ spring:
     name: editorflow
 
   datasource:
-    url: jdbc:mysql://localhost:3306/editorflow
-    username: root
-    password: P@venkat3
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:editorflow;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:P@venkat3}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+
+  h2:
+    console:
+      enabled: true
 
   jpa:
     hibernate:
@@ -17,4 +21,8 @@ spring:
         format_sql: true
 
 server:
-  port: 8080
+  port: ${PORT:8080}
+
+jwt:
+  secret: ${JWT_SECRET:7f6b5e4a3d2c1b0a9f8e7d6c5b4a3928172635445566778899aabbccddeeff11}
+  expiration: ${JWT_EXPIRATION:86400000}
