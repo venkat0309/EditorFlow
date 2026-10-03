@@ -1,4 +1,4 @@
-## 📌 About EditorFlow
+##  📌 About EditorFlow
 
 **EditorFlow** is a collaborative content and document management platform designed to simplify how teams create, organize, edit, and manage digital content.
 
